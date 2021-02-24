@@ -34,23 +34,26 @@ export default {
     }
   },
   actions: {
-    async loadProducts(context) {
-      const response = await fetch(
-        `${API_BASE_URL}/api/products?` +
-          new URLSearchParams({
-            categoryId: context.rootState.filter.filterCategory,
-            'materialIds[]': context.rootState.filter.filterMaterials,
-            'seasonIds[]': context.rootState.filter.filterSeasons,
-            'colorIds[]': context.rootState.filter.filterColors,
-            page: context.state.page,
-            limit: context.state.productsPerPage,
-            minPrice: context.rootState.filter.filterPriceFrom,
-            maxPrice: context.rootState.filter.filterPriceTo
-          })
-      )
-      const productsData = await response.json()
-      context.commit('updateProducts', productsData.items)
-      context.commit('updateProductsCount', productsData.pagination.total)
+    loadProducts(context) {
+      clearTimeout(this.loadProductsTimer)
+      this.loadProductsTimer = setTimeout(async () => {
+        const response = await fetch(
+          `${API_BASE_URL}/api/products?` +
+            new URLSearchParams({
+              categoryId: context.rootState.filter.filterCategory,
+              'materialIds[]': context.rootState.filter.filterMaterials,
+              'seasonIds[]': context.rootState.filter.filterSeasons,
+              'colorIds[]': context.rootState.filter.filterColors,
+              page: context.state.page,
+              limit: context.state.productsPerPage,
+              minPrice: context.rootState.filter.filterPriceFrom,
+              maxPrice: context.rootState.filter.filterPriceTo
+            })
+        )
+        const productsData = await response.json()
+        context.commit('updateProducts', productsData.items)
+        context.commit('updateProductsCount', productsData.pagination.total)
+      }, 0)
     },
     updatePageAction(context, page) {
       context.commit('updatePage', page)
