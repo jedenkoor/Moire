@@ -73,9 +73,9 @@ export default {
       context.state.filterPriceFrom = 0
       context.state.filterPriceTo = 0
       context.state.filterCategory = 0
-      context.state.filterColors.length = 0
-      context.state.filterMaterials.length = 0
-      context.state.filterSeasons.length = 0
+      context.state.filterColors = []
+      context.state.filterMaterials = []
+      context.state.filterSeasons = []
     }
   }
 }
