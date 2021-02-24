@@ -1,15 +1,17 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import products from './modules/products.js'
+import filter from './modules/filter.js'
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
-  state: {
-  },
-  mutations: {
-  },
-  actions: {
-  },
+  state: {},
+  getters: {},
+  mutations: {},
+  actions: {},
   modules: {
+    products,
+    filter
   }
 })
