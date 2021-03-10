@@ -1,4 +1,5 @@
-import { API_BASE_URL } from '@/config.js'
+import api from '@/api.js'
+import serialize from '@/functions/serializeQueryParams.js'
 
 export default {
   namespaced: true,
@@ -8,20 +9,7 @@ export default {
     productsPerPage: 12,
     productsCount: 0
   },
-  getters: {
-    products(state) {
-      return state.products
-    },
-    page(state) {
-      return state.page
-    },
-    perPage(state) {
-      return state.productsPerPage
-    },
-    count(state) {
-      return state.productsCount
-    }
-  },
+  getters: {},
   mutations: {
     updateProducts(state, products) {
       state.products = products
@@ -34,30 +22,35 @@ export default {
     }
   },
   actions: {
-    loadProducts(context) {
+    loadProducts(context, filter) {
+      let params = {
+        page: context.state.page,
+        limit: context.state.productsPerPage
+      }
+
+      params = Object.assign(params, filter)
+      for (const [key, value] of Object.entries(params)) {
+        if (Array.isArray(value) && !value.length) {
+          delete params[key]
+        }
+      }
+
+      params = serialize.serializeQueryParams(params)
+
       clearTimeout(this.loadProductsTimer)
       this.loadProductsTimer = setTimeout(async () => {
-        const response = await fetch(
-          `${API_BASE_URL}/api/products?` +
-            new URLSearchParams({
-              categoryId: context.rootState.filter.filterCategory,
-              'materialIds[]': context.rootState.filter.filterMaterials,
-              'seasonIds[]': context.rootState.filter.filterSeasons,
-              'colorIds[]': context.rootState.filter.filterColors,
-              page: context.state.page,
-              limit: context.state.productsPerPage,
-              minPrice: context.rootState.filter.filterPriceFrom,
-              maxPrice: context.rootState.filter.filterPriceTo
-            })
-        )
-        const productsData = await response.json()
-        context.commit('updateProducts', productsData.items)
-        context.commit('updateProductsCount', productsData.pagination.total)
+        try {
+          const productsData = await api.fetchApi(`api/products?${params}`)
+          context.commit('updateProducts', productsData.items)
+          context.commit('updateProductsCount', productsData.pagination.total)
+        } catch (e) {
+          console.log(e)
+        }
       }, 0)
     },
-    updatePageAction(context, page) {
-      context.commit('updatePage', page)
-      context.dispatch('loadProducts')
+    updatePageAction(context, params) {
+      context.commit('updatePage', params.page)
+      context.dispatch('loadProducts', params.filter)
     }
   }
 }

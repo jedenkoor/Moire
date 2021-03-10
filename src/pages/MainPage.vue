@@ -20,7 +20,7 @@
 
 <script>
 import declOfNum from '@/functions/declOfNum'
-import { mapGetters, mapActions } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 
 import ProductFilter from '@/components/Product/ProductFilter'
 import ProductList from '@/components/Product/ProductList'
@@ -34,7 +34,7 @@ export default {
     ProductList
   },
   computed: {
-    ...mapGetters('products', ['products', 'count'])
+    ...mapState('products', ['products', 'count'])
   },
   methods: {
     ...mapActions('products', ['loadProducts'])

@@ -1,34 +1,14 @@
-import { API_BASE_URL } from '@/config.js'
+import api from '@/api.js'
 
 export default {
   namespaced: true,
   state: {
-    filterPriceFrom: 0,
-    filterPriceTo: 0,
-    filterCategory: 0,
-    filterColors: [],
-    filterMaterials: [],
-    filterSeasons: [],
-
     categories: [],
     colors: [],
     materials: [],
     seasons: []
   },
-  getters: {
-    categories(state) {
-      return state.categories
-    },
-    colors(state) {
-      return state.colors
-    },
-    materials(state) {
-      return state.materials
-    },
-    seasons(state) {
-      return state.seasons
-    }
-  },
+  getters: {},
   mutations: {
     updateCategoties(state, categories) {
       state.categories = categories
@@ -41,41 +21,40 @@ export default {
     },
     updateSeasons(state, seasons) {
       state.seasons = seasons
-    },
-    updateFilter(state, data) {
-      for (const key in data) {
-        state[key] = data[key]
-      }
     }
   },
   actions: {
     async loadCategories(context) {
-      const response = await fetch(`${API_BASE_URL}/api/productCategories`)
-      const categoriesData = await response.json()
-      context.commit('updateCategoties', categoriesData.items)
+      try {
+        const categoriesData = await api.fetchApi('api/productCategories')
+        context.commit('updateCategoties', categoriesData.items)
+      } catch (e) {
+        console.log(e)
+      }
     },
     async loadColors(context) {
-      const response = await fetch(`${API_BASE_URL}/api/colors`)
-      const colorsData = await response.json()
-      context.commit('updateColors', colorsData.items)
+      try {
+        const colorsData = await api.fetchApi('api/colors')
+        context.commit('updateColors', colorsData.items)
+      } catch (e) {
+        console.log(e)
+      }
     },
     async loadMaterials(context) {
-      const response = await fetch(`${API_BASE_URL}/api/materials`)
-      const materialsData = await response.json()
-      context.commit('updateMaterials', materialsData.items)
+      try {
+        const materialsData = await api.fetchApi('api/materials')
+        context.commit('updateMaterials', materialsData.items)
+      } catch (e) {
+        console.log(e)
+      }
     },
     async loadSeasons(context) {
-      const response = await fetch(`${API_BASE_URL}/api/seasons`)
-      const seasonsData = await response.json()
-      context.commit('updateSeasons', seasonsData.items)
-    },
-    resetFilter(context) {
-      context.state.filterPriceFrom = 0
-      context.state.filterPriceTo = 0
-      context.state.filterCategory = 0
-      context.state.filterColors = []
-      context.state.filterMaterials = []
-      context.state.filterSeasons = []
+      try {
+        const seasonsData = await api.fetchApi('api/seasons')
+        context.commit('updateSeasons', seasonsData.items)
+      } catch (e) {
+        console.log(e)
+      }
     }
   }
 }

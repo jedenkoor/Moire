@@ -1,5 +1,5 @@
 <template>
-  <ul class="catalog__pagination pagination" v-if="count">
+  <ul class="catalog__pagination pagination" v-if="productsCount">
     <li class="pagination__item">
       <a
         aria-label="Предыдущая страница"
@@ -48,13 +48,13 @@
 <script>
 import getPagesInPagination from '@/functions/pagination'
 
-import { mapGetters, mapActions } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 
 export default {
   computed: {
-    ...mapGetters('products', ['page', 'perPage', 'count']),
+    ...mapState('products', ['page', 'productsPerPage', 'productsCount']),
     pagesAll() {
-      return Math.ceil(this.count / this.perPage)
+      return Math.ceil(this.productsCount / this.productsPerPage)
     },
     pagesInPagination() {
       return getPagesInPagination(this.pagesAll, this.page)
@@ -64,17 +64,17 @@ export default {
     ...mapActions('products', ['updatePageAction']),
     paginate(e, page) {
       if (!e.target.innerText.includes('...')) {
-        this.updatePageAction(page)
+        this.updatePageAction({ page, filter: {} })
       }
     },
     prevPage() {
       if (this.page > 1) {
-        this.updatePageAction(this.page - 1)
+        this.updatePageAction({ page: this.page - 1, filter: {} })
       }
     },
     nextPage() {
       if (this.page < this.pagesAll) {
-        this.updatePageAction(this.page + 1)
+        this.updatePageAction({ page: this.page + 1, filter: {} })
       }
     }
   }

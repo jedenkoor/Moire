@@ -13,7 +13,7 @@
             class="form__input"
             type="text"
             name="min-price"
-            v-model.number="currentPriceFrom"
+            v-model.number="filters.minPrice"
           />
           <span class="form__value">От</span>
         </label>
@@ -22,7 +22,7 @@
             class="form__input"
             type="text"
             name="max-price"
-            v-model.number="currentPriceTo"
+            v-model.number="filters.maxPrice"
           />
           <span class="form__value">До</span>
         </label>
@@ -35,7 +35,7 @@
             class="form__select"
             type="text"
             name="category"
-            v-model="currentCategoryId"
+            v-model="filters.categoryId"
           >
             <option value="0">Все категории</option>
             <option
@@ -55,7 +55,7 @@
         <ProductColors
           class="colors--black"
           :colors="colors"
-          :currentColors="currentColors"
+          :currentColors="filters['colorIds[]']"
           @setColor="setCurrentColor"
         />
       </fieldset>
@@ -74,7 +74,7 @@
                 type="checkbox"
                 name="material"
                 :value="material.id"
-                :checked="currentMaterials.includes(material.id)"
+                :checked="filters['materialIds[]'].includes(material.id)"
                 @change="setCurrentMaterial(material.id)"
               />
               <span class="check-list__desc">
@@ -100,7 +100,7 @@
                 type="checkbox"
                 name="collection"
                 :value="season.id"
-                :checked="currentSeasons.includes(season.id)"
+                :checked="filters['seasonIds[]'].includes(season.id)"
                 @change="setCurrentSeason(season.id)"
               />
               <span class="check-list__desc">
@@ -112,12 +112,17 @@
         </ul>
       </fieldset>
 
-      <button class="filter__submit button button--primery" type="submit">
+      <button
+        class="filter__submit button button--primery"
+        type="submit"
+        :disabled="disabledSubmit"
+      >
         Применить
       </button>
       <button
         class="filter__reset button button--second"
         type="button"
+        :disabled="disabledReset"
         @click="reset"
       >
         Сбросить
@@ -127,101 +132,96 @@
 </template>
 
 <script>
-import { mapState, mapGetters, mapMutations, mapActions } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 
 import ProductColors from '@/components/Product/ProductColors'
 
 export default {
   data() {
     return {
-      currentPriceFrom: 0,
-      currentPriceTo: 0,
-      currentCategoryId: 0,
-      currentColors: [],
-      currentMaterials: [],
-      currentSeasons: []
+      disabledSubmit: true,
+      disabledReset: true,
+      filters: {
+        minPrice: 0,
+        maxPrice: 0,
+        categoryId: 0,
+        'colorIds[]': [],
+        'materialIds[]': [],
+        'seasonIds[]': []
+      }
     }
   },
   components: {
     ProductColors
   },
   computed: {
-    ...mapState('filter', [
-      'filterPriceFrom',
-      'filterPriceTo',
-      'filterCategory',
-      'filterColors',
-      'filterMaterials',
-      'filterSeasons'
-    ]),
-    ...mapGetters('filter', ['categories', 'colors', 'materials', 'seasons'])
+    ...mapState('filter', ['categories', 'colors', 'materials', 'seasons'])
   },
   methods: {
-    ...mapMutations('filter', ['updateFilter']),
     ...mapActions('filter', [
       'loadCategories',
       'loadColors',
       'loadMaterials',
-      'loadSeasons',
-      'resetFilter'
+      'loadSeasons'
     ]),
     ...mapActions('products', ['updatePageAction']),
     setCurrentColor(newColor) {
-      this.currentColors = [newColor]
-    },
-    setCurrentMaterial(newMaterial) {
-      this.currentMaterials = [newMaterial]
-    },
-    setCurrentSeason(newSeason) {
-      this.currentSeasons = [newSeason]
-    },
-    submit() {
-      if (
-        this.filterPriceFrom !== this.currentPriceFrom ||
-        this.filterPriceTo !== this.currentPriceTo ||
-        this.filterCategory !== this.currentCategoryId ||
-        this.filterColors !== this.currentColors ||
-        this.filterMaterials !== this.currentMaterials ||
-        this.filterSeasons !== this.currentSeasons
-      ) {
-        this.updateFilter({
-          filterPriceFrom: this.currentPriceFrom,
-          filterPriceTo: this.currentPriceTo,
-          filterCategory: this.currentCategoryId,
-          filterColors: this.currentColors,
-          filterMaterials: this.currentMaterials,
-          filterSeasons: this.currentSeasons
-        })
+      if (this.filters['colorIds[]'].includes(newColor)) {
+        this.filters['colorIds[]'].splice(
+          this.filters['colorIds[]'].indexOf(newColor),
+          1
+        )
+      } else {
+        this.filters['colorIds[]'].push(newColor)
       }
     },
+    setCurrentMaterial(newMaterial) {
+      if (this.filters['materialIds[]'].includes(newMaterial)) {
+        this.filters['materialIds[]'].splice(
+          this.filters['materialIds[]'].indexOf(newMaterial),
+          1
+        )
+      } else {
+        this.filters['materialIds[]'].push(newMaterial)
+      }
+    },
+    setCurrentSeason(newSeason) {
+      if (this.filters['seasonIds[]'].includes(newSeason)) {
+        this.filters['seasonIds[]'].splice(
+          this.filters['seasonIds[]'].indexOf(newSeason),
+          1
+        )
+      } else {
+        this.filters['seasonIds[]'].push(newSeason)
+      }
+    },
+    submit() {
+      this.disabledSubmit = true
+      this.updatePageAction({ page: 1, filter: this.filters })
+    },
     reset() {
-      this.resetFilter()
+      for (const [key, value] of Object.entries(this.filters)) {
+        if (typeof value === 'number') {
+          this.filters[key] = 0
+        } else if (typeof value === 'object') {
+          this.filters[key] = []
+        }
+      }
+      this.updatePageAction({ page: 1, filter: this.filters })
+
+      setTimeout(async () => {
+        this.disabledSubmit = true
+        this.disabledReset = true
+      }, 0)
     }
   },
   watch: {
-    filterPriceFrom(newValue) {
-      this.currentPriceFrom = newValue
-      this.updatePageAction(1)
-    },
-    filterPriceTo(newValue) {
-      this.currentPriceTo = newValue
-      this.updatePageAction(1)
-    },
-    filterCategory(newValue) {
-      this.currentCategoryId = newValue
-      this.updatePageAction(1)
-    },
-    filterColors(newValue) {
-      this.currentColors = newValue
-      this.updatePageAction(1)
-    },
-    filterMaterials(newValue) {
-      this.currentMaterials = newValue
-      this.updatePageAction(1)
-    },
-    filterSeasons(newValue) {
-      this.currentSeasons = newValue
-      this.updatePageAction(1)
+    filters: {
+      handler() {
+        this.disabledSubmit = false
+        this.disabledReset = false
+      },
+      deep: true
     }
   },
   created() {

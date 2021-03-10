@@ -4,7 +4,7 @@
       <label class="colors__label">
         <input
           class="colors__radio sr-only"
-          type="radio"
+          type="checkbox"
           :value="color.title"
           :checked="currentColors.includes(color.id)"
           @change="$emit('setColor', color.id)"
