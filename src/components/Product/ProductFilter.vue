@@ -55,7 +55,7 @@
         <ProductColors
           class="colors--black"
           :colors="colors"
-          :currentColors="filters['colorIds[]']"
+          :currentColors="filters.colorIds"
           @setColor="setCurrentColor"
         />
       </fieldset>
@@ -73,9 +73,8 @@
                 class="check-list__check sr-only"
                 type="checkbox"
                 name="material"
+                v-model="filters.materialIds"
                 :value="material.id"
-                :checked="filters['materialIds[]'].includes(material.id)"
-                @change="setCurrentMaterial(material.id)"
               />
               <span class="check-list__desc">
                 {{ material.title }}
@@ -99,9 +98,8 @@
                 class="check-list__check sr-only"
                 type="checkbox"
                 name="collection"
+                v-model="filters.seasonIds"
                 :value="season.id"
-                :checked="filters['seasonIds[]'].includes(season.id)"
-                @change="setCurrentSeason(season.id)"
               />
               <span class="check-list__desc">
                 {{ season.title }}
@@ -145,9 +143,9 @@ export default {
         minPrice: 0,
         maxPrice: 0,
         categoryId: 0,
-        'colorIds[]': [],
-        'materialIds[]': [],
-        'seasonIds[]': []
+        colorIds: [],
+        materialIds: [],
+        seasonIds: []
       }
     }
   },
@@ -166,33 +164,10 @@ export default {
     ]),
     ...mapActions('products', ['updatePageAction']),
     setCurrentColor(newColor) {
-      if (this.filters['colorIds[]'].includes(newColor)) {
-        this.filters['colorIds[]'].splice(
-          this.filters['colorIds[]'].indexOf(newColor),
-          1
-        )
+      if (this.filters.colorIds.includes(newColor)) {
+        this.filters.colorIds.splice(this.filters.colorIds.indexOf(newColor), 1)
       } else {
-        this.filters['colorIds[]'].push(newColor)
-      }
-    },
-    setCurrentMaterial(newMaterial) {
-      if (this.filters['materialIds[]'].includes(newMaterial)) {
-        this.filters['materialIds[]'].splice(
-          this.filters['materialIds[]'].indexOf(newMaterial),
-          1
-        )
-      } else {
-        this.filters['materialIds[]'].push(newMaterial)
-      }
-    },
-    setCurrentSeason(newSeason) {
-      if (this.filters['seasonIds[]'].includes(newSeason)) {
-        this.filters['seasonIds[]'].splice(
-          this.filters['seasonIds[]'].indexOf(newSeason),
-          1
-        )
-      } else {
-        this.filters['seasonIds[]'].push(newSeason)
+        this.filters.colorIds.push(newColor)
       }
     },
     submit() {
@@ -208,8 +183,7 @@ export default {
         }
       }
       this.updatePageAction({ page: 1, filter: this.filters })
-
-      setTimeout(async () => {
+      setTimeout(() => {
         this.disabledSubmit = true
         this.disabledReset = true
       }, 0)

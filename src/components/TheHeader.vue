@@ -5,7 +5,7 @@
 
       <a class="header__logo" href="#">
         <img
-          src="img/svg/logo-moire.svg"
+          src="/img/svg/logo-moire.svg"
           alt="Логотип интернет магазина Moire"
           width="116"
           height="34"

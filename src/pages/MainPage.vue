@@ -4,8 +4,8 @@
       <div class="content__row">
         <h1 class="content__title">Каталог</h1>
         <span class="content__info">
-          {{ count }}
-          {{ count | declOfNum(['товар', 'товара', 'товаров']) }}
+          {{ productsCount }}
+          {{ productsCount | declOfNum(['товар', 'товара', 'товаров']) }}
         </span>
       </div>
     </div>
@@ -34,7 +34,7 @@ export default {
     ProductList
   },
   computed: {
-    ...mapState('products', ['products', 'count'])
+    ...mapState('products', ['products', 'productsCount'])
   },
   methods: {
     ...mapActions('products', ['loadProducts'])

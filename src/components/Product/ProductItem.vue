@@ -5,7 +5,9 @@
     </a>
 
     <h3 class="catalog__title">
-      <a href="#"> {{ product.title }} </a>
+      <a href="#">
+        {{ product.title }}
+      </a>
     </h3>
 
     <span class="catalog__price"> {{ product.price | numberFormat }} ₽ </span>

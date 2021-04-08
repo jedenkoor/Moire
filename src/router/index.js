@@ -9,6 +9,10 @@ const routes = [
     path: '/',
     name: 'main',
     component: MainPage
+  },
+  {
+    path: '*',
+    redirect: '/404'
   }
 ]
 
