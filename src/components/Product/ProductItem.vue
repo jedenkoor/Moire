@@ -1,13 +1,16 @@
 <template>
   <li class="catalog__item">
-    <a class="catalog__pic" href="#">
+    <router-link
+      class="catalog__pic"
+      :to="{ name: 'product', params: { id: product.id } }"
+    >
       <img :src="currentImage" :alt="product.title" />
-    </a>
+    </router-link>
 
     <h3 class="catalog__title">
-      <a href="#">
+      <router-link :to="{ name: 'product', params: { id: product.id } }">
         {{ product.title }}
-      </a>
+      </router-link>
     </h3>
 
     <span class="catalog__price"> {{ product.price | numberFormat }} ₽ </span>

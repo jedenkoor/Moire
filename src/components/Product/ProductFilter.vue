@@ -130,23 +130,26 @@
 </template>
 
 <script>
+import lodash from 'lodash'
 import { mapState, mapActions } from 'vuex'
 
 import ProductColors from '@/components/Product/ProductColors'
+
+const INITIAL_FILTERS = {
+  minPrice: 0,
+  maxPrice: 0,
+  categoryId: 0,
+  colorIds: [],
+  materialIds: [],
+  seasonIds: []
+}
 
 export default {
   data() {
     return {
       disabledSubmit: true,
       disabledReset: true,
-      filters: {
-        minPrice: 0,
-        maxPrice: 0,
-        categoryId: 0,
-        colorIds: [],
-        materialIds: [],
-        seasonIds: []
-      }
+      filters: lodash.cloneDeep(INITIAL_FILTERS)
     }
   },
   components: {
@@ -174,19 +177,12 @@ export default {
       this.disabledSubmit = true
       this.updatePageAction({ page: 1, filter: this.filters })
     },
-    reset() {
-      for (const [key, value] of Object.entries(this.filters)) {
-        if (typeof value === 'number') {
-          this.filters[key] = 0
-        } else if (typeof value === 'object') {
-          this.filters[key] = []
-        }
-      }
+    async reset() {
+      this.filters = lodash.cloneDeep(INITIAL_FILTERS)
       this.updatePageAction({ page: 1, filter: this.filters })
-      setTimeout(() => {
-        this.disabledSubmit = true
-        this.disabledReset = true
-      }, 0)
+      await this.$nextTick()
+      this.disabledSubmit = true
+      this.disabledReset = true
     }
   },
   watch: {

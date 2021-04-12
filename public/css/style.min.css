@@ -1243,4 +1243,23 @@ a {
   flex-direction: column;
   flex: 1;
 }
+.preloader {
+  position: fixed;
+  z-index: 999;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.8);
+  text-align: center;
+  font-size: 24px;
+}
+.preloader button {
+  width: 250px;
+  margin-top: 15px;
+}
 /*# sourceMappingURL=style.min.css.map */
