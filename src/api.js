@@ -3,28 +3,24 @@ import serialize from '@/functions/serializeQueryParams.js'
 
 export default {
   async fetchApi(url, method = 'GET', data) {
-    let params = {}
-
-    if (data) {
-      params = {
-        method,
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
-        },
-        body: serialize.serializeQueryParams(data)
-      }
-    } else {
-      params = {
-        method
-      }
+    const params = {
+      method,
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+      },
+      body: data ? serialize.serializeQueryParams(data) : undefined
     }
-    let response = {}
 
-    // setTimeout(async () => {
-    response = await fetch(`${API_BASE_URL}/${url}`, params)
-    // }, 10000)
-
+    const response = await fetch(`${API_BASE_URL}/${url}`, params)
     const json = await response.json()
+
+    if (!response.ok) {
+      const e = new Error()
+      e.message = json.error.message
+      e.code = json.error.code
+      throw e
+    }
+
     return json
   }
 }

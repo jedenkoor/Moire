@@ -9,8 +9,7 @@ export default {
     page: 1,
     productsPerPage: 12,
     productsCount: 0,
-    loading: false,
-    loadingError: false,
+
     productNotFound: false
   },
   getters: {},
@@ -27,12 +26,6 @@ export default {
     updateProduct(state, product) {
       state.product = product
     },
-    updateLoading(state, flag) {
-      state.loading = flag
-    },
-    updateLoadingError(state, flag) {
-      state.loadingError = flag
-    },
     updateProductNotFound(state, flag) {
       state.productNotFound = flag
     }
@@ -47,20 +40,16 @@ export default {
       params = serialize.serializeQueryParams(params)
       clearTimeout(this.loadProductsTimer)
       this.loadProductsTimer = setTimeout(async () => {
+        context.commit('updateLoadingError', false, { root: true })
+        context.commit('updateLoading', true, { root: true })
         try {
-          context.commit('updateLoadingError', false)
-          context.commit('updateLoading', true)
           const productsData = await api.fetchApi(`api/products?${params}`)
-          if (Object.keys(productsData)[0] !== 'error') {
-            context.commit('updateProducts', productsData.items)
-            context.commit('updateProductsCount', productsData.pagination.total)
-          } else {
-            context.commit('updateLoadingError', true)
-          }
-          context.commit('updateLoading', false)
+          context.commit('updateProducts', productsData.items)
+          context.commit('updateProductsCount', productsData.pagination.total)
         } catch (e) {
-          console.log(e)
+          context.commit('updateLoadingError', true, { root: true })
         }
+        context.commit('updateLoading', false, { root: true })
       }, 0)
     },
 
@@ -70,21 +59,19 @@ export default {
     },
 
     async loadProduct(context, id) {
+      context.commit('updateLoadingError', false, { root: true })
+      context.commit('updateLoading', true, { root: true })
       try {
-        context.commit('updateLoadingError', false)
-        context.commit('updateLoading', true)
         const productData = await api.fetchApi(`api/products/${id}`)
-        if (Object.keys(productData)[0] !== 'error') {
-          context.commit('updateProduct', productData)
-        } else if (productData.error.code === 404) {
+        context.commit('updateProduct', productData)
+      } catch (e) {
+        if (e.code === 404) {
           context.commit('updateProductNotFound', true)
         } else {
-          context.commit('updateLoadingError', true)
+          context.commit('updateLoadingError', true, { root: true })
         }
-        context.commit('updateLoading', false)
-      } catch (e) {
-        console.log(e)
       }
+      context.commit('updateLoading', false, { root: true })
     }
   }
 }

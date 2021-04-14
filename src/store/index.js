@@ -7,9 +7,19 @@ import cart from './modules/cart.js'
 Vue.use(Vuex)
 
 export default new Vuex.Store({
-  state: {},
+  state: {
+    loading: false,
+    loadingError: false
+  },
   getters: {},
-  mutations: {},
+  mutations: {
+    updateLoading(state, flag) {
+      state.loading = flag
+    },
+    updateLoadingError(state, flag) {
+      state.loadingError = flag
+    }
+  },
   actions: {},
   modules: {
     products,

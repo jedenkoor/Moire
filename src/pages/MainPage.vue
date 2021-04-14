@@ -1,33 +1,19 @@
 <template>
-  <main class="container">
-    <div class="preloader" v-if="loading">
-      <img src="/img/loader.gif" alt="Preloader" />
+  <main class="container" v-if="products">
+    <div class="content__top">
+      <div class="content__row">
+        <h1 class="content__title">Каталог</h1>
+        <span class="content__info">
+          {{ productsCount }}
+          {{ productsCount | declOfNum(['товар', 'товара', 'товаров']) }}
+        </span>
+      </div>
     </div>
 
-    <div class="preloader" v-if="loadingError">
-      Произошла ошибка<br />
-      при загрузке
-      <button class="button button--primery" @click="loadProducts()">
-        Попробовать еще раз
-      </button>
-    </div>
+    <div class="content__catalog">
+      <ProductFilter />
 
-    <div v-if="products">
-      <div class="content__top">
-        <div class="content__row">
-          <h1 class="content__title">Каталог</h1>
-          <span class="content__info">
-            {{ productsCount }}
-            {{ productsCount | declOfNum(['товар', 'товара', 'товаров']) }}
-          </span>
-        </div>
-      </div>
-
-      <div class="content__catalog">
-        <ProductFilter />
-
-        <ProductList :products="products" />
-      </div>
+      <ProductList :products="products" />
     </div>
   </main>
 </template>

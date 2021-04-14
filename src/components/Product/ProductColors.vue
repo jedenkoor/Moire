@@ -4,13 +4,12 @@
       <label class="colors__label">
         <input
           class="colors__radio sr-only"
-          type="checkbox"
+          type="radio"
           :value="color.title"
           :checked="currentColors.includes(color.id)"
           @change="$emit('setColor', color.id)"
         />
-        <span class="colors__value" :style="`background-color: ${color.code}`">
-        </span>
+        <span class="colors__value" :style="`background-color: ${color.code}`"> </span>
       </label>
     </li>
   </ul>

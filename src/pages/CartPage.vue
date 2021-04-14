@@ -3,9 +3,9 @@
     <div class="content__top">
       <ul class="breadcrumbs">
         <li class="breadcrumbs__item">
-          <a class="breadcrumbs__link" href="index.html">
+          <router-link class="breadcrumbs__link" :to="{ name: 'main' }">
             Каталог
-          </a>
+          </router-link>
         </li>
         <li class="breadcrumbs__item">
           <a class="breadcrumbs__link">
@@ -19,7 +19,8 @@
           Корзина
         </h1>
         <span class="content__info">
-          3 товара
+          {{ cartLength }}
+          {{ cartLength | declOfNum(['товар', 'товара', 'товаров']) }}
         </span>
       </div>
     </div>
@@ -27,69 +28,21 @@
     <section class="cart">
       <form class="cart__form form" action="#" method="POST">
         <div class="cart__field">
-          <ul class="cart__list">
-            <li class="cart__item product">
-              <div class="product__pic">
-                <img
-                  src="img/product-square-4.jpg"
-                  width="120"
-                  height="120"
-                  srcset="img/product-square-4@2x.jpg 2x"
-                  alt="Название товара"
-                />
-              </div>
-              <h3 class="product__title">
-                Базовая хлопковая футболка
-              </h3>
-              <p class="product__info product__info--color">
-                Цвет:
-                <span>
-                  <i style="background-color: #FF9B78"></i>
-                  Персиковый
-                </span>
-              </p>
-              <span class="product__code">
-                Артикул: 1501230
-              </span>
-
-              <div class="product__counter form__counter">
-                <button type="button" aria-label="Убрать один товар">
-                  <svg width="10" height="10" fill="currentColor">
-                    <use xlink:href="#icon-minus"></use>
-                  </svg>
-                </button>
-
-                <input type="text" value="1" name="count" />
-
-                <button type="button" aria-label="Добавить один товар">
-                  <svg width="10" height="10" fill="currentColor">
-                    <use xlink:href="#icon-plus"></use>
-                  </svg>
-                </button>
-              </div>
-
-              <b class="product__price">
-                990 ₽
-              </b>
-
-              <button
-                class="product__del button-del"
-                type="button"
-                aria-label="Удалить товар из корзины"
-              >
-                <svg width="20" height="20" fill="currentColor">
-                  <use xlink:href="#icon-close"></use>
-                </svg>
-              </button>
-            </li>
+          <ul class="cart__list" v-if="cartLength">
+            <CartItem v-for="item in cartProducts" :key="item.id" :item="item" />
           </ul>
+          <div class="cart__list--empty" v-else>
+            <p>Ваша корзина пуста</p>
+          </div>
         </div>
 
-        <div class="cart__block">
+        <div class="cart__block" v-if="cartLength">
           <p class="cart__desc">
             Мы&nbsp;посчитаем стоимость доставки на&nbsp;следующем этапе
           </p>
-          <p class="cart__price">Итого: <span>4 070 ₽</span></p>
+          <p class="cart__price">
+            Итого: <span>{{ cartTotalPrice | numberFormat }} ₽</span>
+          </p>
 
           <button class="cart__button button button--primery" type="submit">
             Оформить заказ
@@ -99,3 +52,26 @@
     </section>
   </main>
 </template>
+
+<script>
+import { mapState, mapGetters } from 'vuex'
+
+import numberFormat from '@/functions/numberFormat'
+import declOfNum from '@/functions/declOfNum'
+
+import CartItem from '@/components/Cart/CartItem'
+
+export default {
+  components: {
+    CartItem
+  },
+  computed: {
+    ...mapState('cart', ['cartProducts']),
+    ...mapGetters('cart', ['cartLength', 'cartTotalPrice'])
+  },
+  filters: {
+    numberFormat,
+    declOfNum
+  }
+}
+</script>
