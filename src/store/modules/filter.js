@@ -11,16 +11,16 @@ export default {
   getters: {},
   mutations: {
     updateCategoties(state, categories) {
-      state.categories = categories
+      state.categories = Object.freeze(categories)
     },
     updateColors(state, colors) {
-      state.colors = colors
+      state.colors = Object.freeze(colors)
     },
     updateMaterials(state, materials) {
-      state.materials = materials
+      state.materials = Object.freeze(materials)
     },
     updateSeasons(state, seasons) {
-      state.seasons = seasons
+      state.seasons = Object.freeze(seasons)
     }
   },
   actions: {

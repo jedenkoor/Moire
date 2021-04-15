@@ -1,9 +1,6 @@
 <template>
   <li class="catalog__item">
-    <router-link
-      class="catalog__pic"
-      :to="{ name: 'product', params: { id: product.id } }"
-    >
+    <router-link class="catalog__pic" :to="{ name: 'product', params: { id: product.id } }">
       <img :src="currentImage" :alt="product.title" />
     </router-link>
 
@@ -17,6 +14,7 @@
 
     <ProductColors
       class="colors--black"
+      :type="'radio'"
       :colors="colors"
       :currentColors="currentColors"
       @setColor="setCurrentColor"
@@ -41,12 +39,8 @@ export default {
   },
   computed: {
     currentImage() {
-      const colorObj = this.product.colors.find(
-        item => item.color.id === this.currentColors[0]
-      )
-      return colorObj.gallery
-        ? colorObj.gallery[0].file.url
-        : 'http://placehold.it/270x350/'
+      const colorObj = this.product.colors.find(item => item.color.id === this.currentColors[0])
+      return colorObj.gallery ? colorObj.gallery[0].file.url : 'http://placehold.it/270x350/'
     },
     colors() {
       return this.product.colors.map(item => item.color)

@@ -36,7 +36,7 @@
           </div>
         </div>
 
-        <div class="cart__block" v-if="cartLength">
+        <div class="cart__sticky cart__block" v-if="cartLength">
           <p class="cart__desc">
             Мы&nbsp;посчитаем стоимость доставки на&nbsp;следующем этапе
           </p>
@@ -44,9 +44,15 @@
             Итого: <span>{{ cartTotalPrice | numberFormat }} ₽</span>
           </p>
 
-          <button class="cart__button button button--primery" type="submit">
-            Оформить заказ
-          </button>
+          <router-link
+            class="cart__button button button--primery"
+            v-if="cartLength"
+            custom
+            v-slot="{ href, navigate }"
+            :to="{ name: 'order' }"
+          >
+            <button :href="href" @click="navigate">Оформить заказ</button>
+          </router-link>
         </div>
       </form>
     </section>

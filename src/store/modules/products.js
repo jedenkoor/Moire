@@ -9,13 +9,12 @@ export default {
     page: 1,
     productsPerPage: 12,
     productsCount: 0,
-
     productNotFound: false
   },
   getters: {},
   mutations: {
     updateProducts(state, products) {
-      state.products = products
+      state.products = Object.freeze(products)
     },
     updateProductsCount(state, count) {
       state.productsCount = count
@@ -24,14 +23,14 @@ export default {
       state.page = page
     },
     updateProduct(state, product) {
-      state.product = product
+      state.product = Object.freeze(product)
     },
     updateProductNotFound(state, flag) {
       state.productNotFound = flag
     }
   },
   actions: {
-    loadProducts(context, filter) {
+    loadProducts(context, filter = {}) {
       let params = {
         page: context.state.page,
         limit: context.state.productsPerPage,

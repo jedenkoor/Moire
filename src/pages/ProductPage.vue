@@ -61,6 +61,7 @@
                 <legend class="form__legend">Цвет</legend>
                 <ProductColors
                   class="colors--black"
+                  :type="'radio'"
                   :colors="colors"
                   :currentColors="currentColors"
                   @setColor="setCurrentColor"
@@ -188,8 +189,8 @@ export default {
     }
   },
   watch: {
-    productNotFound() {
-      if (this.productNotFound) {
+    productNotFound(v) {
+      if (v) {
         this.$router.replace({ name: 'notFound' })
       }
     }

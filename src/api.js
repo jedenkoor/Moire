@@ -18,6 +18,7 @@ export default {
       const e = new Error()
       e.message = json.error.message
       e.code = json.error.code
+      e.request = json.error.request
       throw e
     }
 

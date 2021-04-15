@@ -27,20 +27,12 @@ import ProductFilter from '@/components/Product/ProductFilter'
 import ProductList from '@/components/Product/ProductList'
 
 export default {
-  data() {
-    return {}
-  },
   components: {
     ProductFilter,
     ProductList
   },
   computed: {
-    ...mapState('products', [
-      'products',
-      'productsCount',
-      'loading',
-      'loadingError'
-    ])
+    ...mapState('products', ['products', 'productsCount', 'loading', 'loadingError'])
   },
   methods: {
     ...mapActions('products', ['loadProducts'])

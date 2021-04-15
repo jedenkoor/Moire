@@ -1,29 +1,14 @@
 <template>
   <aside class="filter">
-    <form
-      class="filter__form form"
-      action="#"
-      method="get"
-      @submit.prevent="submit"
-    >
+    <form class="filter__form form" action="#" method="get" @submit.prevent="submit">
       <fieldset class="form__block">
         <legend class="form__legend">Цена</legend>
         <label class="form__label form__label--price">
-          <input
-            class="form__input"
-            type="text"
-            name="min-price"
-            v-model.number="filters.minPrice"
-          />
+          <input class="form__input" type="text" name="min-price" v-model.number="filters.minPrice" />
           <span class="form__value">От</span>
         </label>
         <label class="form__label form__label--price">
-          <input
-            class="form__input"
-            type="text"
-            name="max-price"
-            v-model.number="filters.maxPrice"
-          />
+          <input class="form__input" type="text" name="max-price" v-model.number="filters.maxPrice" />
           <span class="form__value">До</span>
         </label>
       </fieldset>
@@ -31,18 +16,9 @@
       <fieldset class="form__block">
         <legend class="form__legend">Категория</legend>
         <label class="form__label form__label--select">
-          <select
-            class="form__select"
-            type="text"
-            name="category"
-            v-model="filters.categoryId"
-          >
+          <select class="form__select" type="text" name="category" v-model="filters.categoryId">
             <option value="0">Все категории</option>
-            <option
-              v-for="category in categories"
-              :key="category.id"
-              :value="category.id"
-            >
+            <option v-for="category in categories" :key="category.id" :value="category.id">
               {{ category.title }}
             </option>
           </select>
@@ -54,6 +30,7 @@
 
         <ProductColors
           class="colors--black"
+          :type="'checkbox'"
           :colors="colors"
           :currentColors="filters.colorIds"
           @setColor="setCurrentColor"
@@ -63,11 +40,7 @@
       <fieldset class="form__block">
         <legend class="form__legend">Материал</legend>
         <ul class="check-list">
-          <li
-            class="check-list__item"
-            v-for="material in materials"
-            :key="material.id"
-          >
+          <li class="check-list__item" v-for="material in materials" :key="material.id">
             <label class="check-list__label">
               <input
                 class="check-list__check sr-only"
@@ -88,11 +61,7 @@
       <fieldset class="form__block">
         <legend class="form__legend">Коллекция</legend>
         <ul class="check-list">
-          <li
-            class="check-list__item"
-            v-for="season in seasons"
-            :key="season.id"
-          >
+          <li class="check-list__item" v-for="season in seasons" :key="season.id">
             <label class="check-list__label">
               <input
                 class="check-list__check sr-only"
@@ -110,19 +79,10 @@
         </ul>
       </fieldset>
 
-      <button
-        class="filter__submit button button--primery"
-        type="submit"
-        :disabled="disabledSubmit"
-      >
+      <button class="filter__submit button button--primery" type="submit" :disabled="disabledSubmit">
         Применить
       </button>
-      <button
-        class="filter__reset button button--second"
-        type="button"
-        :disabled="disabledReset"
-        @click="reset"
-      >
+      <button class="filter__reset button button--second" type="button" :disabled="disabledReset" @click="reset">
         Сбросить
       </button>
     </form>
@@ -159,12 +119,7 @@ export default {
     ...mapState('filter', ['categories', 'colors', 'materials', 'seasons'])
   },
   methods: {
-    ...mapActions('filter', [
-      'loadCategories',
-      'loadColors',
-      'loadMaterials',
-      'loadSeasons'
-    ]),
+    ...mapActions('filter', ['loadCategories', 'loadColors', 'loadMaterials', 'loadSeasons']),
     ...mapActions('products', ['updatePageAction']),
     setCurrentColor(newColor) {
       if (this.filters.colorIds.includes(newColor)) {

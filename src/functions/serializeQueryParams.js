@@ -18,9 +18,7 @@ export default {
         const k = prefix || p
         const v = obj[p]
         str.push(
-          v !== null && typeof v === 'object'
-            ? serialize.serializeQueryParams(v, k)
-            : k + '=' + v
+          v !== null && typeof v === 'object' ? serialize.serializeQueryParams(v, k) : k + '=' + encodeURIComponent(v)
         )
       }
     }

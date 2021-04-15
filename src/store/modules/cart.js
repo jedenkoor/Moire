@@ -19,7 +19,10 @@ export default {
       state.userAccessKey = accessKey
     },
     updateCartProducts(state, items) {
-      state.cartProducts = items
+      state.cartProducts = Object.freeze(items)
+    },
+    resetCart(state) {
+      state.cartProducts = []
     }
   },
   actions: {
